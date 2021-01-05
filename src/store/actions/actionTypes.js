@@ -1,0 +1,6 @@
+export const ADD_MEAL = 'ADD_MEAL';
+export const REMOVE_MEAL = 'REMOVE_MEAL';
+export const ADD_INGREDIENT = 'ADD_INGREDIENT';
+export const REMOVE_INGREDIENT = 'REMOVE_INGREDIENT';
+export const SELECT_MEAL = 'SELECT_MEAL';
+export const DESELECT_MEAL = 'DESELECT_MEAL';

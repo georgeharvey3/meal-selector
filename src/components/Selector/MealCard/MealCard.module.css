@@ -1,0 +1,86 @@
+.MealCard {
+    width: 300px;
+    border: thin solid black;
+    border-radius: 5px;
+    margin: 10px;
+    background-color: cornsilk;
+    box-shadow: 0 1px 3px black;
+    padding: 10px;
+}
+
+.MealCard ul {
+    list-style: none;
+    text-align: left;
+}
+
+.MealCard li {
+    display: flex;
+    align-items: center;
+}
+
+
+.Title {
+    background-color: inherit;
+    padding: 20px;
+}
+
+.Hoverable:hover {
+    background-color: rgb(221, 197, 101);
+    cursor: pointer;
+}
+
+.Add {
+    margin: 0 auto;
+    background-color: inherit;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    border: solid thin black
+}
+
+.Add:hover {
+    background-color: rgb(221, 197, 101);
+    cursor: pointer;
+}
+
+.Remove {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    margin: 5px;
+    border: thin solid black;
+    font-size: 0.8em;
+}
+
+.Remove:hover {
+    cursor: pointer;
+}
+
+.Selected {
+    background-color: rgb(221, 197, 101);
+}
+
+.MealCard input {
+    display: block;
+    margin: 16px 0 16px 40px;
+}
+
+.RMHolder {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.RemoveMeal {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    margin: 5px;
+    border: thin solid black;
+    font-size: 0.8em;
+}
+
+.RemoveMeal:hover {
+    cursor: pointer;
+}
