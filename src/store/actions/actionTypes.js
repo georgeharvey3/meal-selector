@@ -4,3 +4,4 @@ export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const REMOVE_INGREDIENT = 'REMOVE_INGREDIENT';
 export const SELECT_MEAL = 'SELECT_MEAL';
 export const DESELECT_MEAL = 'DESELECT_MEAL';
+export const FETCH_MEALS = 'FETCH_MEALS';

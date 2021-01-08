@@ -6,6 +6,11 @@
     background-color: cornsilk;
     box-shadow: 0 1px 3px black;
     padding: 10px;
+    display: table;
+}
+
+.Selected {
+    background-color: rgb(136, 236, 136);
 }
 
 .MealCard ul {
@@ -18,15 +23,14 @@
     align-items: center;
 }
 
+.Hidden {
+    display: none;
+}
+
 
 .Title {
     background-color: inherit;
     padding: 20px;
-}
-
-.Hoverable:hover {
-    background-color: rgb(221, 197, 101);
-    cursor: pointer;
 }
 
 .Add {
@@ -42,23 +46,6 @@
 .Add:hover {
     background-color: rgb(221, 197, 101);
     cursor: pointer;
-}
-
-.Remove {
-    height: 25px;
-    width: 25px;
-    border-radius: 50%;
-    margin: 5px;
-    border: thin solid black;
-    font-size: 0.8em;
-}
-
-.Remove:hover {
-    cursor: pointer;
-}
-
-.Selected {
-    background-color: rgb(221, 197, 101);
 }
 
 .MealCard input {

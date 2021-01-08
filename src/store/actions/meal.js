@@ -43,3 +43,9 @@ export const deSelectMeal = (mealName) => {
         mealName: mealName
     }
 }
+
+export const fetchMeals = () => {
+    return {
+        type: actionTypes.FETCH_MEALS
+    }
+}

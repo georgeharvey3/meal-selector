@@ -19,9 +19,13 @@ const reducer = (state=initialState, action) => {
         case actionTypes.ADD_MEAL:
             let meal = {'name': action.mealName, 'ingredients': []};
 
+            let nextMealsAdd = state.meals.concat(meal);
+
+            localStorage.setItem("meals", JSON.stringify(nextMealsAdd));
+
             return {
                 ...state,
-                meals: state.meals.concat(meal)
+                meals: nextMealsAdd
             }
         case actionTypes.REMOVE_MEAL:
             let meals = [...state.meals];
@@ -34,10 +38,13 @@ const reducer = (state=initialState, action) => {
                 }
             }
 
-            let nextMeals = meals.slice(0, index).concat(meals.slice(index + 1, meals.length));
+            let nextMealsRemove = meals.slice(0, index).concat(meals.slice(index + 1, meals.length));
+
+            localStorage.setItem("meals", JSON.stringify(nextMealsRemove));
+
             return {
                 ...state,
-                meals: nextMeals
+                meals: nextMealsRemove
             }
         case actionTypes.ADD_INGREDIENT:
             let nextMealsAddIngredient = [...state.meals];
@@ -45,6 +52,9 @@ const reducer = (state=initialState, action) => {
             let oldAddIngredients = [...thisMealAdd.ingredients];
             let newAddIngredients = oldAddIngredients.concat(action.ingredientName);
             thisMealAdd.ingredients = newAddIngredients;
+
+            localStorage.setItem("meals", JSON.stringify(nextMealsAddIngredient));
+
             return {
                 ...state,
                 meals: nextMealsAddIngredient
@@ -61,13 +71,15 @@ const reducer = (state=initialState, action) => {
             }
             let newRemoveIngredients = oldRemoveIngredients.slice(0, removeIngredientIndex).concat(oldRemoveIngredients.slice(removeIngredientIndex + 1, oldRemoveIngredients.length));
             thisMealRemove.ingredients = newRemoveIngredients;
+
+            localStorage.setItem("meals", JSON.stringify(nextMealsRemoveIngredient));
+
             return {
                 ...state,
                 meals: nextMealsRemoveIngredient
             }
         case actionTypes.SELECT_MEAL:
             let selectedMeal = state.meals.filter(m => m.name === action.mealName)[0];
-            console.log("AFTER:", state.selectedMeals.concat(selectedMeal))
 
             return {
                 ...state,
@@ -87,6 +99,16 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 selectedMeals: nextSelectedMeals
+            }
+        case actionTypes.FETCH_MEALS:
+            let fetchedMeals = JSON.parse(localStorage.getItem('meals'));
+            if (!fetchedMeals) {
+                fetchedMeals = [];
+                localStorage.setItem("meals", "[]");
+            }
+            return {
+                ...state,
+                meals: fetchedMeals
             }
         default:
             return state;

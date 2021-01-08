@@ -1,34 +1,49 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Aux from '../../../hoc/Aux';
+import classes from './ShoppingList.module.css';
 
 class ShoppingList extends Component {
     
     getIngredients = (meals) => {
-        let ingredients = [];
+        let ings = {};
         for (let i = 0; i < meals.length; i ++) {
             let meal = meals[i];
             for (let j = 0; j < meal.ingredients.length; j ++) {
-                ingredients.push(meal.ingredients[j]);
+                if (meal.ingredients[j] in ings) {
+                    ings[meal.ingredients[j]] += 1
+                } else {
+                    ings[meal.ingredients[j]] = 1;
+                }
             }
         }
-        return ingredients;
+        return ings;
     }
     render () {
         let ingredients = this.getIngredients(this.props.selectedMeals);
 
         return (
-            <Aux>
+            <div className={classes.ShoppingList}>
                 <h3>Your Shopping List:</h3>
                 <ul>
-                    {ingredients.map(ing => (
-                        <li key={ing}>
-                            <p>{ing}</p>
-                        </li>
-                    ))}
+                    {Object.keys(ingredients).map(ing => {
+                        let suffix = "";
+
+                        if (ingredients[ing] > 1) {
+                            suffix += " ";
+                            for (let i = 0; i < ingredients[ing]; i ++) {
+                                suffix += "*";
+                            }
+                        }
+
+                        return (
+                            <li key={ing}>
+                                <p>{ing + suffix}</p>
+                            </li>
+                        );
+                    })}
                 </ul>
-            </Aux>
+            </div>
         )
     }
 }

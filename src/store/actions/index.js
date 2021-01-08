@@ -4,5 +4,6 @@ export {
     addIngredient,
     removeIngredient,
     selectMeal,
-    deSelectMeal
+    deSelectMeal,
+    fetchMeals
 } from './meal.js';

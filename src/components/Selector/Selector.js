@@ -15,7 +15,13 @@ class Selector extends Component {
 
     state = {
         addingMeal: false,
-        showList: false
+        showList: false,
+        showErrorModal: false,
+        errorMessage: ""
+    }
+
+    componentDidMount = () => {
+        this.props.onFetchMeals();
     }
 
     onAddMealClicked = () => {
@@ -26,10 +32,24 @@ class Selector extends Component {
 
     onAddMealKeyPress = (e) => {
         if (e.key === 'Enter') {
-            this.setState({
-                addingMeal: false
-            });
-            this.props.onAddMeal(e.target.value);
+            let found = false;
+            for (let i = 0; i < this.props.meals.length; i ++) {
+                if (this.props.meals[i].name === e.target.value) {
+                    found = true;
+                }
+            }
+
+            if (found) {
+                this.setState({
+                    showErrorModal: true,
+                    errorMessage: `You already have a meal named ${e.target.value}!`
+                })
+            } else {
+                this.setState({
+                    addingMeal: false
+                });
+                this.props.onAddMeal(e.target.value);
+            }
         }
     }
 
@@ -41,8 +61,9 @@ class Selector extends Component {
 
     onDismissModal = () => {
         this.setState({
-            showList: false
-        })
+            showList: false,
+            showErrorModal: false
+        });
     }
 
     render () {
@@ -56,6 +77,10 @@ class Selector extends Component {
         return (
             <Aux>
                 <h1>Meal Selector</h1>
+                <Button
+                    clicked={this.onAddMealClicked}>Add Meal</Button>
+                <Button
+                    clicked={this.onShowList}>See List</Button>
                 <div className={classes.Selector}>
                     {this.props.meals.map((meal, index) => {
                         return (
@@ -67,14 +92,16 @@ class Selector extends Component {
                     })}
                     {addingMealCard}
                 </div>
-                <Button
-                    clicked={this.onAddMealClicked}>Add Meal</Button>
-                <Button
-                    clicked={this.onShowList}>See List</Button>
+                
                 <Modal 
                     show={this.state.showList}
                     modalClosed={this.onDismissModal}>
                     <ShoppingList />
+                </Modal>
+                <Modal
+                    show={this.state.showErrorModal}
+                    modalClosed={this.onDismissModal}>
+                        <p>{this.state.errorMessage}</p>
                 </Modal>
             </Aux>
         );
@@ -90,7 +117,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onAddMeal: (mealName) => dispatch(mealActions.addMeal(mealName)),
-        onRemoveMeal: (mealName) => dispatch(mealActions.removeMeal(mealName))
+        onRemoveMeal: (mealName) => dispatch(mealActions.removeMeal(mealName)),
+        onFetchMeals: () => dispatch(mealActions.fetchMeals())
     }
 }
 
