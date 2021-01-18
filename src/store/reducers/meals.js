@@ -1,12 +1,9 @@
 import * as actionTypes from '../actions/actionTypes';
 
 let initialMeals = [
-    {'name': 'curry', 'ingredients': ['rice', 'spice']},
-    {'name': 'soup', 'ingredients': ['vegetables', 'stock']},
-    {'name': 'burger', 'ingredients': ['patty', 'bun']},
-    {'name': 'eggs', 'ingredients': ['egg', 'bread']},
-    {'name': 'salad', 'ingredients': ['lettuce', 'gin']},
-    {'name': 'pasta', 'ingredients': ['pasata', 'tomato']}
+    {'name': 'Carbonara', 'ingredients': ['Dijon Mustard', 'Cashews', 'Linguine', 'Almond Flakes', 'Mushrooms', 'Parsley']},
+    {'name': 'Sweet Potato Dhal', 'ingredients': ['Red Lentils', 'Onion', 'Ginger', 'Sweet Potato', 'Coconut Milk', 'Chilli']},
+    {'name': 'Risotto', 'ingredients': ['Risotto Rice', 'Leek', 'Chestnuts', 'Walnuts', 'White Wine']},
   ];
 
 const initialState = {
