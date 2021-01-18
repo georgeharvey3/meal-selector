@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import * as mealActions from '../../store/actions/index';
 
 import MealCard from './MealCard/MealCard';
-import Button from '../UI/Button/Button';
 import Modal from '../UI/Modal/Modal';
 import ShoppingList from '../Selector/ShoppingList/ShoppingList';
 
@@ -72,15 +71,19 @@ class Selector extends Component {
             addingMealCard = <MealCard 
                                 key={0}
                                 new
-                                addMealKeyPress={(e) => this.onAddMealKeyPress(e)}/>
+                                addMealKeyPress={(e) => this.onAddMealKeyPress(e)}
+                                removeMealClicked={() => this.setState({addingMeal: false})}/>
         }
+
         return (
             <Aux>
                 <h1>Meal Selector</h1>
-                <Button
-                    clicked={this.onAddMealClicked}>Add Meal</Button>
-                <Button
-                    clicked={this.onShowList}>See List</Button>
+                <button
+                    className={classes.Button}
+                    onClick={this.onAddMealClicked}>Add Meal</button>
+                <button
+                    className={classes.Button}
+                    onClick={this.onShowList}>See List</button>
                 <div className={classes.Selector}>
                     {this.props.meals.map((meal, index) => {
                         return (

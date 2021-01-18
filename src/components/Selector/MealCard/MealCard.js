@@ -80,7 +80,8 @@ class MealCard extends Component {
         if (this.state.addingIngredient) {
             addInput = <input 
                 onKeyPress={this.onAddIngredientKeyPress}
-                autoFocus={true}/>
+                autoFocus={true}
+                onBlur={() => {this.setState({addingIngredient: false})}}/>
         }
 
         let header;
@@ -126,16 +127,26 @@ class MealCard extends Component {
             total = null;
         }
 
+        let selectColour = this.state.selected ? "rgb(112, 112, 112)" : "rgb(53, 110, 53)";
+        let selectOpacity = "1";
+
+        if (this.props.new) {
+            selectColour = "rgb(112, 112, 112)";
+            selectOpacity = 0.5;
+        }
+
         return (
             <div className={cardClasses.join(" ")}>
                 <div className={classes.RMHolder}>
                     <button 
-                        onClick={this.toggleSelectMeal}>Select Meal</button>
-                    <RemoveButton 
-                        className={classes.RemoveMeal}
-                        clicked={this.props.removeMealClicked}>
-                            X
-                    </RemoveButton>
+                        className={selectColour}
+                        style={{backgroundColor: selectColour, opacity: selectOpacity}}
+                        onClick={this.toggleSelectMeal}>{this.state.selected ? "Deselect" : "Select"}</button>
+                    <button
+                        style={{backgroundColor: "rgb(180, 66, 66)"}} 
+                        onClick={this.props.removeMealClicked}>
+                            Delete
+                    </button>
                 </div>
                 <div 
                     className={classes.Title}

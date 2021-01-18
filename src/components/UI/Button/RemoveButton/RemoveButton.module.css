@@ -1,9 +1,11 @@
 .RemoveButton {
     height: 25px;
     width: 25px;
-    border-radius: 50%;
+    background-color: rgb(180, 66, 66);
+    color: white;
     margin: 5px;
-    border: thin solid black;
+    border: none;
+    border-radius: 15%;
     font-size: 0.8em;
 }
 
