@@ -103,7 +103,7 @@ const reducer = (state=initialState, action) => {
         case actionTypes.FETCH_MEALS:
             let fetchedMeals = JSON.parse(localStorage.getItem('meals'));
             if (!fetchedMeals) {
-                fetchedMeals = [];
+                fetchedMeals = state.meals;
                 localStorage.setItem("meals", "[]");
             }
             return {
