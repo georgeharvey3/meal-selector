@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as mealActions from '../../store/actions/index';
+import * as actions from '../../store/actions/index';
 
 import MealCard from './MealCard/MealCard';
 import Modal from '../UI/Modal/Modal';
 import ShoppingList from '../Selector/ShoppingList/ShoppingList';
+import LoginModal from '../UI/Modal/AuthModal/AuthModal';
 
 import classes from './Selector.module.css';
 
@@ -16,11 +17,21 @@ class Selector extends Component {
         addingMeal: false,
         showList: false,
         showErrorModal: false,
-        errorMessage: ""
+        errorMessage: "",
+        showLogin: false
     }
 
-    componentDidMount = () => {
-        this.props.onFetchMeals();
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.isAuthenticated !== this.props.isAuthenticated) {
+            if (this.props.isAuthenticated) {
+
+                this.props.onFetchMeals(this.props.token, this.props.userId);
+
+                this.setState({
+                    showLogin: false
+                });
+            }
+        }
     }
 
     onAddMealClicked = () => {
@@ -47,7 +58,13 @@ class Selector extends Component {
                 this.setState({
                     addingMeal: false
                 });
-                this.props.onAddMeal(e.target.value);
+                let mealName = e.target.value;
+                let meal = {
+                    name: mealName,
+                    ingredients: [],
+                    userId: this.props.userId
+                }
+                this.props.onAddMeal(meal, this.props.token);
             }
         }
     }
@@ -65,6 +82,22 @@ class Selector extends Component {
         });
     }
 
+    onLoginClicked = () => {
+        this.setState({
+            showLogin: true
+        });
+    }
+
+    onLogoutClicked = () => {
+
+    }
+
+    onDismissLogin = () => {
+        this.setState({
+            showLogin: false
+        })
+    }
+
     render () {
         let addingMealCard = null;
         if (this.state.addingMeal) {
@@ -78,6 +111,16 @@ class Selector extends Component {
         return (
             <Aux>
                 <h1>Meal Selector</h1>
+                {this.props.isAuthenticated ? 
+                    <button
+                    onClick={this.props.onLogoutClicked}>
+                        Logout
+                    </button> :
+                    <button
+                        onClick={this.onLoginClicked}>
+                            Login/Register
+                    </button>}
+                <br />
                 <button
                     className={classes.Button}
                     onClick={this.onAddMealClicked}>Add Meal</button>
@@ -90,7 +133,7 @@ class Selector extends Component {
                             <MealCard 
                                 key={index} 
                                 meal={meal} 
-                                removeMealClicked={() => this.props.onRemoveMeal(meal.name)}/>
+                                removeMealClicked={() => this.props.onRemoveMeal(meal.id, this.props.token)}/>
                         );
                     })}
                     {addingMealCard}
@@ -106,6 +149,9 @@ class Selector extends Component {
                     modalClosed={this.onDismissModal}>
                         <p>{this.state.errorMessage}</p>
                 </Modal>
+                <LoginModal 
+                    show={this.state.showLogin}
+                    modalClosed={this.onDismissLogin}/>
             </Aux>
         );
     }
@@ -113,15 +159,20 @@ class Selector extends Component {
 
 const mapStateToProps = state => {
     return {
-        meals: state.meals
+        meals: state.meals.meals,
+        isAuthenticated: state.auth.token !== null,
+        token: state.auth.token,
+        mealError: state.meals.error,
+        userId: state.auth.userId
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddMeal: (mealName) => dispatch(mealActions.addMeal(mealName)),
-        onRemoveMeal: (mealName) => dispatch(mealActions.removeMeal(mealName)),
-        onFetchMeals: () => dispatch(mealActions.fetchMeals())
+        onAddMeal: (meal, token) => dispatch(actions.addMeal(meal, token)),
+        onRemoveMeal: (mealId, token) => dispatch(actions.removeMeal(mealId, token)),
+        onFetchMeals: (token, userId) => dispatch(actions.fetchMeals(token, userId)),
+        onLogoutClicked: () => dispatch(actions.logout())
     }
 }
 

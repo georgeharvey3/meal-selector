@@ -63,7 +63,8 @@ class MealCard extends Component {
             this.setState({
                 addingIngredient: false
             });
-            this.props.onAddIngredient(this.props.meal.name, e.target.value);
+            let ingredient = {ingredientName: e.target.value}
+            this.props.onAddIngredient(this.props.meal.id, ingredient, this.props.token);
         }
     }
 
@@ -97,17 +98,19 @@ class MealCard extends Component {
                     <h3>{this.props.meal.name}</h3>
                     <Button clicked={this.toggleShowIngredients}>{this.state.showIngredients ? "Hide Ingredients" : "Show Ingredients"}</Button>
                 </Aux>
-            );    
-            ingredients = this.props.meal.ingredients.map((ing, index) => (
-                <li key={index}>
-                    <RemoveButton 
-                        className={classes.Remove}
-                        clicked={() => this.props.onRemoveIngredient(this.props.meal.name, ing)}>
-                            X
-                    </RemoveButton>
-                    <p>{ing}</p>
-                </li>
-            ));
+            );
+            if (this.props.meal.ingredients && this.props.meal.ingredients.length > 0) {    
+                ingredients = this.props.meal.ingredients.map((ing, index) => (
+                    <li key={index}>
+                        <RemoveButton 
+                            className={classes.Remove}
+                            clicked={() => this.props.onRemoveIngredient(this.props.meal.id, ing.id, this.props.token)}>
+                                X
+                        </RemoveButton>
+                        <p>{ing.ingredientName}</p>
+                    </li>
+                ));
+            }
         }
 
         let total = (
@@ -160,14 +163,15 @@ class MealCard extends Component {
 
 const mapStateToProps = state => {
     return {
-        selectedMeals: state.selectedMeals
+        selectedMeals: state.meals.selectedMeals,
+        token: state.auth.token
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddIngredient: (mealName, ingredientName) => dispatch(mealActions.addIngredient(mealName, ingredientName)),
-        onRemoveIngredient: (mealName, ingredientName) => dispatch(mealActions.removeIngredient(mealName, ingredientName)),
+        onAddIngredient: (mealId, ingredient, token) => dispatch(mealActions.addIngredient(mealId, ingredient, token)),
+        onRemoveIngredient: (mealId, ingredientId, token) => dispatch(mealActions.removeIngredient(mealId, ingredientId, token)),
         onSelectMeal: mealName => dispatch(mealActions.selectMeal(mealName)),
         onDeselectMeal: mealName => dispatch(mealActions.deSelectMeal(mealName))
     }

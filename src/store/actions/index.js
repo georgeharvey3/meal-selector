@@ -5,5 +5,11 @@ export {
     removeIngredient,
     selectMeal,
     deSelectMeal,
-    fetchMeals
+    fetchMeals,
 } from './meal.js';
+
+export {
+    auth,
+    logout,
+    authCheckState
+} from './auth';

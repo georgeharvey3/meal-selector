@@ -1,0 +1,22 @@
+.Auth {
+    background-color: rgb(187, 187, 187);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.Auth input {
+    margin-bottom: 10px;
+    background-color: transparent;
+    border: none;
+    border-bottom: solid thin darkgray;
+}
+
+.Auth p span {
+    color: blue;
+    text-decoration: underline;
+}
+
+.Auth p span:hover {
+    cursor: pointer;
+}
+

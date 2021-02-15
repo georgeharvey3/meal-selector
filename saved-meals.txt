@@ -1,0 +1,13 @@
+[{name: "Pesto Pasta", ingredients: ["Pesto", "Pasta", "Nuts", "Sweet Potato"]}, {name: "Dhal",…},…]
+0: {name: "Pesto Pasta", ingredients: ["Pesto", "Pasta", "Nuts", "Sweet Potato"]}
+1: {name: "Dhal",…}
+2: {name: "Carbonara",…}
+3: {name: "Burgers", ingredients: ["Buns", "Burgers", "Avocado", "Onion", "Lettuce", "Chips"]}
+4: {name: "Nut Roast",…}
+5: {name: "Bolognese", ingredients: ["Tomato Sauce", "Meatballs", "Linguine", "Basil"]}
+6: {name: "Risotto", ingredients: ["Risotto Rice", "Leek", "Chestnuts", "Walnuts", "White Wine"]}
+7: {name: "Tomato Curry",…}
+ingredients: ["Coconut Milk", "Tamarind Paste", "Tomatoes", "Green Chilli", "Onion"]
+name: "Tomato Curry"
+8: {name: "Shwarma", ingredients: ["Tomato", "Onion", "Pomegranate Seeds", "Mint", "Shwarma", "Wraps"]}
+9: {name: "Puttanesca",…}

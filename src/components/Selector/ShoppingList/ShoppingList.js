@@ -10,10 +10,10 @@ class ShoppingList extends Component {
         for (let i = 0; i < meals.length; i ++) {
             let meal = meals[i];
             for (let j = 0; j < meal.ingredients.length; j ++) {
-                if (meal.ingredients[j] in ings) {
-                    ings[meal.ingredients[j]] += 1
+                if (meal.ingredients[j].ingredientName in ings) {
+                    ings[meal.ingredients[j].ingredientName] += 1
                 } else {
-                    ings[meal.ingredients[j]] = 1;
+                    ings[meal.ingredients[j].ingredientName] = 1;
                 }
             }
         }
@@ -50,7 +50,7 @@ class ShoppingList extends Component {
 
 const mapStateToProps = state => {
     return {
-        selectedMeals: state.selectedMeals
+        selectedMeals: state.meals.selectedMeals
     }
 }
 

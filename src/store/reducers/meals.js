@@ -1,22 +1,24 @@
 import * as actionTypes from '../actions/actionTypes';
+import { updateObject } from '../../shared/utility';
 
 let initialMeals = [
-    {'name': 'Carbonara', 'ingredients': ['Dijon Mustard', 'Cashews', 'Linguine', 'Almond Flakes', 'Mushrooms', 'Parsley']},
-    {'name': 'Sweet Potato Dhal', 'ingredients': ['Red Lentils', 'Onion', 'Ginger', 'Sweet Potato', 'Coconut Milk', 'Chilli']},
-    {'name': 'Risotto', 'ingredients': ['Risotto Rice', 'Leek', 'Chestnuts', 'Walnuts', 'White Wine']},
+    {'mealName': 'Carbonara', 'ingredients': ['Dijon Mustard', 'Cashews', 'Linguine', 'Almond Flakes', 'Mushrooms', 'Parsley']},
+    {'mealName': 'Sweet Potato Dhal', 'ingredients': ['Red Lentils', 'Onion', 'Ginger', 'Sweet Potato', 'Coconut Milk', 'Chilli']},
+    {'mealName': 'Risotto', 'ingredients': ['Risotto Rice', 'Leek', 'Chestnuts', 'Walnuts', 'White Wine']},
   ];
 
 const initialState = {
     meals: initialMeals,
-    selectedMeals: []
+    selectedMeals: [],
+    error: false,
+    loading: true
 }
 
 const reducer = (state=initialState, action) => {
     switch (action.type) {
-        case actionTypes.ADD_MEAL:
-            let meal = {'name': action.mealName, 'ingredients': []};
+        case actionTypes.ADD_MEAL_SUCCESS:
 
-            let nextMealsAdd = state.meals.concat(meal);
+            let nextMealsAdd = state.meals.concat(action.meal);
 
             localStorage.setItem("meals", JSON.stringify(nextMealsAdd));
 
@@ -24,12 +26,12 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 meals: nextMealsAdd
             }
-        case actionTypes.REMOVE_MEAL:
+        case actionTypes.REMOVE_MEAL_SUCCESS:
             let meals = [...state.meals];
             let index;
 
             for (let i = 0; i < meals.length; i ++) {
-                if (meals[i].name === action.mealName) {
+                if (meals[i].id === action.mealId) {
                     index = i;
                     break;
                 }
@@ -43,11 +45,11 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 meals: nextMealsRemove
             }
-        case actionTypes.ADD_INGREDIENT:
+        case actionTypes.ADD_INGREDIENT_SUCCESS:
             let nextMealsAddIngredient = [...state.meals];
-            let thisMealAdd = nextMealsAddIngredient.filter(m => m.name === action.mealName)[0];
+            let thisMealAdd = nextMealsAddIngredient.filter(m => m.id === action.mealId)[0];
             let oldAddIngredients = [...thisMealAdd.ingredients];
-            let newAddIngredients = oldAddIngredients.concat(action.ingredientName);
+            let newAddIngredients = oldAddIngredients.concat(action.ingredient);
             thisMealAdd.ingredients = newAddIngredients;
 
             localStorage.setItem("meals", JSON.stringify(nextMealsAddIngredient));
@@ -56,13 +58,13 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 meals: nextMealsAddIngredient
             }
-        case actionTypes.REMOVE_INGREDIENT:
+        case actionTypes.REMOVE_INGREDIENT_SUCCESS:
             let nextMealsRemoveIngredient = [...state.meals];
-            let thisMealRemove = nextMealsRemoveIngredient.filter(m => m.name === action.mealName)[0];
+            let thisMealRemove = nextMealsRemoveIngredient.filter(m => m.id === action.mealId)[0];
             let oldRemoveIngredients = [...thisMealRemove.ingredients];
             let removeIngredientIndex;
             for (let i = 0; i < oldRemoveIngredients.length; i ++) {
-                if (oldRemoveIngredients[i] === action.ingredientName) {
+                if (oldRemoveIngredients[i].id === action.ingredientId) {
                     removeIngredientIndex = i;
                 }
             }
@@ -97,16 +99,22 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 selectedMeals: nextSelectedMeals
             }
-        case actionTypes.FETCH_MEALS:
-            let fetchedMeals = JSON.parse(localStorage.getItem('meals'));
-            if (!fetchedMeals) {
-                fetchedMeals = state.meals;
-                localStorage.setItem("meals", JSON.stringify(fetchedMeals));
-            }
+        case actionTypes.SET_MEALS:
             return {
                 ...state,
-                meals: fetchedMeals
+                meals: action.meals,
+                error: false,
             }
+        case actionTypes.FETCH_MEALS_START:
+            return updateObject(state, {loading: true});
+        case actionTypes.FETCH_MEALS_FAILED:
+            return updateObject(state, {loading: false})
+        case actionTypes.FETCH_MEALS_SUCCESS:
+            return updateObject(state, {
+                meals: action.meals,
+                loading: false,
+                error: false
+            })
         default:
             return state;
 
