@@ -1,14 +1,36 @@
 .Auth {
     background-color: rgb(187, 187, 187);
+    border-radius: 5px;
     padding: 20px;
+    width: 300px;
     box-sizing: border-box;
 }
 
+.Auth h3 {
+    font-size: 1.5em;
+    color: rgb(53, 110, 53);
+}
+
 .Auth input {
+    font-family: monospace;
+    width: 90%;
+    height: 36px;
+    font-size: 14px;
     margin-bottom: 10px;
     background-color: transparent;
     border: none;
     border-bottom: solid thin darkgray;
+}
+
+.Auth button {
+    height: 36px;
+    width: 100px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: rgb(70, 137, 182);
+    color: white;
+    font-family: monospace;
 }
 
 .Auth p span {

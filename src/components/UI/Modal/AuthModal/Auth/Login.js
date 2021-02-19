@@ -28,15 +28,19 @@ class Login extends Component {
             <div className={classes.Auth}>
                 <h3>Login</h3>
                 {this.props.errorMessage}
-                <input 
-                    placeholder="Email"
-                    onChange={(event) => this.onUpdateField(event, "email")}/>
-                <br/>
-                <input type="password" 
-                    placeholder="Password"
-                    onChange={(event) => this.onUpdateField(event, "password")}/>
-                <br/>
-                <button onClick={this.submitHandler}>Login</button>
+                <form>
+                    <input
+                        id="loginInput"  
+                        placeholder="Email"
+                        onChange={(event) => this.onUpdateField(event, "email")}
+                        autoFocus={true}/>
+                    <br/>
+                    <input type="password" 
+                        placeholder="Password"
+                        onChange={(event) => this.onUpdateField(event, "password")}/>
+                    <br/>
+                    <button onClick={this.submitHandler}>Sign In</button>
+                </form>
                 <p>Don't have an account? <span onClick={this.props.toggleAuth}>Sign Up</span></p>
             </div>
         )

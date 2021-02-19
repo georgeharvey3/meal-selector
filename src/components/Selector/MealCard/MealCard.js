@@ -64,7 +64,19 @@ class MealCard extends Component {
                 addingIngredient: false
             });
             let ingredient = {ingredientName: e.target.value}
-            this.props.onAddIngredient(this.props.meal.id, ingredient, this.props.token);
+            if (this.props.isAuthenticated) {
+                this.props.onAddIngredient(this.props.meal.id, ingredient, this.props.token);
+            } else {
+                this.props.onAddIngredientLocal(this.props.meal.name, ingredient);
+            }
+        }
+    }
+
+    removeIngredientClicked = (ing) => {
+        if (this.props.isAuthenticated) {
+            this.props.onRemoveIngredient(this.props.meal.id, ing.ingredientName, this.props.token)
+        } else {
+            this.props.onRemoveIngredientLocal(this.props.meal.name, ing.ingredientName);
         }
     }
 
@@ -104,7 +116,7 @@ class MealCard extends Component {
                     <li key={index}>
                         <RemoveButton 
                             className={classes.Remove}
-                            clicked={() => this.props.onRemoveIngredient(this.props.meal.id, ing.id, this.props.token)}>
+                            clicked={() => this.removeIngredientClicked(ing)}>
                                 X
                         </RemoveButton>
                         <p>{ing.ingredientName}</p>
@@ -164,14 +176,17 @@ class MealCard extends Component {
 const mapStateToProps = state => {
     return {
         selectedMeals: state.meals.selectedMeals,
-        token: state.auth.token
+        token: state.auth.token,
+        isAuthenticated: state.auth.token !== null
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         onAddIngredient: (mealId, ingredient, token) => dispatch(mealActions.addIngredient(mealId, ingredient, token)),
+        onAddIngredientLocal: (mealName, ingredient) => dispatch(mealActions.addIngredientLocal(mealName, ingredient)),
         onRemoveIngredient: (mealId, ingredientId, token) => dispatch(mealActions.removeIngredient(mealId, ingredientId, token)),
+        onRemoveIngredientLocal: (mealName, ingredientName) => dispatch(mealActions.removeIngredientLocal(mealName, ingredientName)),
         onSelectMeal: mealName => dispatch(mealActions.selectMeal(mealName)),
         onDeselectMeal: mealName => dispatch(mealActions.deSelectMeal(mealName))
     }

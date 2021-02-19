@@ -13,7 +13,7 @@ class Layout extends Component {
                 </main>
                 <footer>
                         <hr style={{width: "90%"}}/>
-                        <p>George Harvey 2020</p>
+                        <p><a href="https://github.com/georgeharvey3">George Harvey</a> 2020</p>
                 </footer>
             </Aux>
         );

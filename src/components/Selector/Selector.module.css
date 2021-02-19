@@ -24,3 +24,23 @@
     cursor: pointer;
     background-color: rgb(99, 160, 201);
 }
+
+.AuthButton {
+    background-color: rgb(126, 126, 126);
+    margin: 1px;
+    font-family: inherit;
+    font-size: 1em;
+    color: white;
+    border-radius: 7px;
+    border: none;
+    /* box-shadow: 0 1px 4px black; */
+    /*background-color: rgb(179, 70, 70);*/
+    background: none;
+    text-decoration: underline;
+    color:rgb(180, 66, 66);
+
+}
+
+.AuthButton:hover {
+    cursor: pointer;
+}

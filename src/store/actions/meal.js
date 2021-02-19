@@ -39,6 +39,13 @@ export const addMeal = ( meal, token ) => {
     }
 }
 
+export const addMealLocal = ( meal ) => {
+    return{
+        type: actionTypes.ADD_MEAL_LOCAL,
+        meal: meal
+    }
+}
+
 export const removeMealStart = () => {
     return {
         type: actionTypes.REMOVE_MEAL_START
@@ -69,6 +76,13 @@ export const removeMeal = ( mealId, token ) => {
             .catch(error => {
                 dispatch(removeMealFailed(error));
             })
+    }
+}
+
+export const removeMealLocal = ( mealName ) => {
+    return{
+        type: actionTypes.REMOVE_MEAL_LOCAL,
+        mealName: mealName
     }
 }
 
@@ -107,6 +121,14 @@ export const addIngredient = ( mealId, ingredient, token ) => {
             })
     }
 
+}
+
+export const addIngredientLocal = ( mealName, ingredient ) => {
+    return {
+        type: actionTypes.ADD_INGREDIENT_LOCAL,
+        mealName: mealName,
+        ingredient: ingredient
+    }
 }
 
 export const addIngredient2 = (mealName, ingredientName) => {
@@ -152,9 +174,9 @@ export const removeIngredient = ( mealId, ingredientId, token ) => {
 
 }
 
-export const removeIngredient2 = (mealName, ingredientName) => {
+export const removeIngredientLocal = (mealName, ingredientName) => {
     return {
-        type: actionTypes.REMOVE_INGREDIENT,
+        type: actionTypes.REMOVE_INGREDIENT_LOCAL,
         mealName: mealName,
         ingredientName: ingredientName
     }
@@ -221,5 +243,11 @@ export const fetchMeals = (token, userId) => {
                 console.log(error);
                 dispatch(fetchMealsFailed(error));
             })
+    }
+}
+
+export const fetchMealsLocal = () => {
+    return {
+        type: actionTypes.FETCH_MEALS_LOCAL
     }
 }

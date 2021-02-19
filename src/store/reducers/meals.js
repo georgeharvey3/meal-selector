@@ -2,13 +2,13 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
 let initialMeals = [
-    {'mealName': 'Carbonara', 'ingredients': ['Dijon Mustard', 'Cashews', 'Linguine', 'Almond Flakes', 'Mushrooms', 'Parsley']},
-    {'mealName': 'Sweet Potato Dhal', 'ingredients': ['Red Lentils', 'Onion', 'Ginger', 'Sweet Potato', 'Coconut Milk', 'Chilli']},
-    {'mealName': 'Risotto', 'ingredients': ['Risotto Rice', 'Leek', 'Chestnuts', 'Walnuts', 'White Wine']},
+    {'name': 'Carbonara', 'ingredients': [{'ingredientName': 'Dijon Mustard'}, {'ingredientName': 'Cashews'}, {'ingredientName': 'Linguine'}, {'ingredientName': 'Almond Flakes'}, {'ingredientName': 'Mushrooms'}, {'ingredientName': 'Parsley'}]},
+    {'name': 'Sweet Potato Dhal', 'ingredients': [{'ingredientName': 'Red Lentils'}, {'ingredientName': 'Onion'}, {'ingredientName': 'Ginger'}, {'ingredientName': 'Sweet Potato'}, {'ingredientName': 'Coconut Milk'}, {'ingredientName': 'Chilli'}]},
+    {'name': 'Risotto', 'ingredients': [{'ingredientName': 'Risotto Rice'}, {'ingredientName': 'Leek'}, {'ingredientName': 'Chestnuts'}, {'ingredientName': 'Walnuts'}, {'ingredientName': 'White Wine'}]},
   ];
 
 const initialState = {
-    meals: initialMeals,
+    meals: [],
     selectedMeals: [],
     error: false,
     loading: true
@@ -26,31 +26,60 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 meals: nextMealsAdd
             }
-        case actionTypes.REMOVE_MEAL_SUCCESS:
-            let meals = [...state.meals];
-            let index;
+        case actionTypes.ADD_MEAL_LOCAL:
+            let nextMealsAddLocal = state.meals.concat(action.meal);
 
-            for (let i = 0; i < meals.length; i ++) {
-                if (meals[i].id === action.mealId) {
-                    index = i;
+            localStorage.setItem("meals", JSON.stringify(nextMealsAddLocal));
+
+            return {
+                ...state,
+                meals: nextMealsAddLocal
+            }
+        case actionTypes.REMOVE_MEAL_SUCCESS:
+            let nextMealsRemoveMeal = [...state.meals];
+            let indexRemoveMeal;
+
+            for (let i = 0; i < nextMealsRemoveMeal.length; i ++) {
+                if (nextMealsRemoveMeal[i].id === action.mealId) {
+                    indexRemoveMeal = i;
                     break;
                 }
             }
 
-            let nextMealsRemove = meals.slice(0, index).concat(meals.slice(index + 1, meals.length));
+            nextMealsRemoveMeal = nextMealsRemoveMeal.slice(0, indexRemoveMeal).concat(nextMealsRemoveMeal.slice(indexRemoveMeal + 1, nextMealsRemoveMeal.length));
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsRemove));
+            localStorage.setItem("meals", JSON.stringify(nextMealsRemoveMeal));
 
             return {
                 ...state,
-                meals: nextMealsRemove
+                meals: nextMealsRemoveMeal
             }
+        case actionTypes.REMOVE_MEAL_LOCAL:
+            let nextMealsRemoveMealLocal = [...state.meals];
+            let indexRemoveMealLocal;
+
+            for (let i = 0; i < nextMealsRemoveMealLocal.length; i ++) {
+                if (nextMealsRemoveMealLocal[i].name === action.mealName) {
+                    indexRemoveMealLocal = i;
+                    break;
+                }
+            }
+
+            nextMealsRemoveMealLocal = nextMealsRemoveMealLocal.slice(0, indexRemoveMealLocal).concat(nextMealsRemoveMealLocal.slice(indexRemoveMealLocal + 1, nextMealsRemoveMealLocal.length));
+
+            localStorage.setItem("meals", JSON.stringify(nextMealsRemoveMealLocal));
+
+            return {
+                ...state,
+                meals: nextMealsRemoveMealLocal
+            }
+
         case actionTypes.ADD_INGREDIENT_SUCCESS:
             let nextMealsAddIngredient = [...state.meals];
-            let thisMealAdd = nextMealsAddIngredient.filter(m => m.id === action.mealId)[0];
-            let oldAddIngredients = [...thisMealAdd.ingredients];
+            let thisMealAddIngredient = nextMealsAddIngredient.filter(m => m.id === action.mealId)[0];
+            let oldAddIngredients = [...thisMealAddIngredient.ingredients];
             let newAddIngredients = oldAddIngredients.concat(action.ingredient);
-            thisMealAdd.ingredients = newAddIngredients;
+            thisMealAddIngredient.ingredients = newAddIngredients;
 
             localStorage.setItem("meals", JSON.stringify(nextMealsAddIngredient));
 
@@ -58,6 +87,20 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 meals: nextMealsAddIngredient
             }
+        case actionTypes.ADD_INGREDIENT_LOCAL:
+            let nextMealsAddIngredientLocal = [...state.meals];
+            let thisMealAddIngredientLocal = nextMealsAddIngredientLocal.filter(m => m.name === action.mealName)[0];
+            let oldAddIngredientsLocal = [...thisMealAddIngredientLocal.ingredients];
+            let newAddIngredientsLocal = oldAddIngredientsLocal.concat(action.ingredient);
+            thisMealAddIngredientLocal.ingredients = newAddIngredientsLocal;
+
+            localStorage.setItem("meals", JSON.stringify(nextMealsAddIngredientLocal));
+
+            return {
+                ...state,
+                meals: nextMealsAddIngredientLocal
+            }
+
         case actionTypes.REMOVE_INGREDIENT_SUCCESS:
             let nextMealsRemoveIngredient = [...state.meals];
             let thisMealRemove = nextMealsRemoveIngredient.filter(m => m.id === action.mealId)[0];
@@ -77,6 +120,26 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 meals: nextMealsRemoveIngredient
             }
+        case actionTypes.REMOVE_INGREDIENT_LOCAL:
+            let nextMealsRemoveIngredientLocal = [...state.meals];
+            let thisMealRemoveIngredientLocal = nextMealsRemoveIngredientLocal.filter(m => m.name === action.mealName)[0];
+            let oldRemoveIngredientsLocal = [...thisMealRemoveIngredientLocal.ingredients];
+            let removeIngredientIndexLocal;
+            for (let i = 0; i < oldRemoveIngredientsLocal.length; i ++) {
+                if (oldRemoveIngredientsLocal[i].ingredientName === action.ingredientName) {
+                    removeIngredientIndexLocal = i;
+                }
+            }
+            let newRemoveIngredientsLocal = oldRemoveIngredientsLocal.slice(0, removeIngredientIndexLocal).concat(oldRemoveIngredientsLocal.slice(removeIngredientIndexLocal + 1, oldRemoveIngredientsLocal.length));
+            thisMealRemoveIngredientLocal.ingredients = newRemoveIngredientsLocal;
+
+            localStorage.setItem("meals", JSON.stringify(nextMealsRemoveIngredientLocal));
+
+            return {
+                ...state,
+                meals: nextMealsRemoveIngredientLocal
+            }
+
         case actionTypes.SELECT_MEAL:
             let selectedMeal = state.meals.filter(m => m.name === action.mealName)[0];
 
@@ -112,6 +175,18 @@ const reducer = (state=initialState, action) => {
         case actionTypes.FETCH_MEALS_SUCCESS:
             return updateObject(state, {
                 meals: action.meals,
+                loading: false,
+                error: false
+            })
+        case actionTypes.FETCH_MEALS_LOCAL:
+            let localMeals = JSON.parse(localStorage.getItem('meals'));
+
+            if (localMeals === null) {
+                localMeals = initialMeals;
+                localStorage.setItem('meals', JSON.stringify(localMeals));
+            }
+            return updateObject(state, {
+                meals: localMeals,
                 loading: false,
                 error: false
             })

@@ -28,15 +28,18 @@ class Register extends Component {
             <div className={classes.Auth}>
                 <h3>Register</h3>
                 {this.props.errorMessage}
-                <input 
-                    placeholder="Email"
-                    onChange={(event) => this.onUpdateField(event, "email")}/>
-                <br/>
-                <input type="password" 
-                    placeholder="Password"
-                    onChange={(event) => this.onUpdateField(event, "password")}/>
-                <br />
-                <button onClick={this.submitHandler}>Register</button>
+                <form>
+                    <input
+                        placeholder="Email"
+                        onChange={(event) => this.onUpdateField(event, "email")}
+                        autoFocus={true}/>
+                    <br/>
+                    <input type="password" 
+                        placeholder="Password"
+                        onChange={(event) => this.onUpdateField(event, "password")}/>
+                    <br />
+                </form>
+                <button onClick={this.submitHandler}>Sign Up</button>
                 <p>Already have an account? <span onClick={this.props.toggleAuth}>Login</span></p>
             </div>
         );

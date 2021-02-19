@@ -21,6 +21,12 @@ class Selector extends Component {
         showLogin: false
     }
 
+    componentDidMount = () => {
+        if (!this.props.isAuthenticated) {
+            this.props.onFetchMealsLocal();
+        }
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.isAuthenticated !== this.props.isAuthenticated) {
             if (this.props.isAuthenticated) {
@@ -59,12 +65,21 @@ class Selector extends Component {
                     addingMeal: false
                 });
                 let mealName = e.target.value;
-                let meal = {
-                    name: mealName,
-                    ingredients: [],
-                    userId: this.props.userId
+
+                if (this.props.isAuthenticated) {
+                    let meal = {
+                        name: mealName,
+                        ingredients: [],
+                        userId: this.props.userId
+                    }
+                    this.props.onAddMeal(meal, this.props.token);
+                } else {
+                    let meal = {
+                        name: mealName,
+                        ingredients: []
+                    }
+                    this.props.onAddMealLocal(meal);
                 }
-                this.props.onAddMeal(meal, this.props.token);
             }
         }
     }
@@ -86,16 +101,28 @@ class Selector extends Component {
         this.setState({
             showLogin: true
         });
+        window.setTimeout(function () { 
+            document.getElementById('loginInput').focus(); 
+        }, 0); 
     }
 
     onLogoutClicked = () => {
-
+        this.props.onLogout();
+        this.props.onFetchMealsLocal();
     }
 
     onDismissLogin = () => {
         this.setState({
             showLogin: false
         })
+    }
+
+    removeMealClicked = (meal) => {
+        if (this.props.isAuthenticated) {
+            this.props.onRemoveMeal(meal.id, this.props.token);
+        } else {
+            this.props.onRemoveMealLocal(meal.name);
+        }
     }
 
     render () {
@@ -110,14 +137,16 @@ class Selector extends Component {
 
         return (
             <Aux>
-                <h1>Meal Selector</h1>
+                <h1 style={{color: "rgb(53, 110, 53)"}}>Meal Selector</h1>
                 {this.props.isAuthenticated ? 
                     <button
-                    onClick={this.props.onLogoutClicked}>
+                    onClick={this.onLogoutClicked}
+                    className={classes.AuthButton}>
                         Logout
                     </button> :
                     <button
-                        onClick={this.onLoginClicked}>
+                        onClick={this.onLoginClicked}
+                        className={classes.AuthButton}>
                             Login/Register
                     </button>}
                 <br />
@@ -133,7 +162,7 @@ class Selector extends Component {
                             <MealCard 
                                 key={index} 
                                 meal={meal} 
-                                removeMealClicked={() => this.props.onRemoveMeal(meal.id, this.props.token)}/>
+                                removeMealClicked={() => this.removeMealClicked(meal)}/>
                         );
                     })}
                     {addingMealCard}
@@ -170,9 +199,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onAddMeal: (meal, token) => dispatch(actions.addMeal(meal, token)),
+        onAddMealLocal: (meal) => dispatch(actions.addMealLocal(meal)),
         onRemoveMeal: (mealId, token) => dispatch(actions.removeMeal(mealId, token)),
+        onRemoveMealLocal: (mealName) => dispatch(actions.removeMealLocal(mealName)),
         onFetchMeals: (token, userId) => dispatch(actions.fetchMeals(token, userId)),
-        onLogoutClicked: () => dispatch(actions.logout())
+        onFetchMealsLocal: () => dispatch(actions.fetchMealsLocal()),
+        onLogout: () => dispatch(actions.logout())
     }
 }
 
