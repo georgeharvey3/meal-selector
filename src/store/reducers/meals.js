@@ -1,199 +1,315 @@
-import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../../shared/utility';
+import * as actionTypes from "../actions/actionTypes";
+import { updateObject } from "../../shared/utility";
 
 let initialMeals = [
-    {'name': 'Carbonara', 'ingredients': [{'ingredientName': 'Dijon Mustard'}, {'ingredientName': 'Cashews'}, {'ingredientName': 'Linguine'}, {'ingredientName': 'Almond Flakes'}, {'ingredientName': 'Mushrooms'}, {'ingredientName': 'Parsley'}]},
-    {'name': 'Sweet Potato Dhal', 'ingredients': [{'ingredientName': 'Red Lentils'}, {'ingredientName': 'Onion'}, {'ingredientName': 'Ginger'}, {'ingredientName': 'Sweet Potato'}, {'ingredientName': 'Coconut Milk'}, {'ingredientName': 'Chilli'}]},
-    {'name': 'Risotto', 'ingredients': [{'ingredientName': 'Risotto Rice'}, {'ingredientName': 'Leek'}, {'ingredientName': 'Chestnuts'}, {'ingredientName': 'Walnuts'}, {'ingredientName': 'White Wine'}]},
-  ];
+  {
+    name: "Carbonara",
+    ingredients: [
+      { ingredientName: "Dijon Mustard" },
+      { ingredientName: "Cashews" },
+      { ingredientName: "Linguine" },
+      { ingredientName: "Almond Flakes" },
+      { ingredientName: "Mushrooms" },
+      { ingredientName: "Parsley" },
+    ],
+  },
+  {
+    name: "Sweet Potato Dhal",
+    ingredients: [
+      { ingredientName: "Red Lentils" },
+      { ingredientName: "Onion" },
+      { ingredientName: "Ginger" },
+      { ingredientName: "Sweet Potato" },
+      { ingredientName: "Coconut Milk" },
+      { ingredientName: "Chilli" },
+    ],
+  },
+  {
+    name: "Risotto",
+    ingredients: [
+      { ingredientName: "Risotto Rice" },
+      { ingredientName: "Leek" },
+      { ingredientName: "Chestnuts" },
+      { ingredientName: "Walnuts" },
+      { ingredientName: "White Wine" },
+    ],
+  },
+];
 
 const initialState = {
-    meals: [],
-    selectedMeals: [],
-    error: false,
-    loading: true
-}
+  meals: [],
+  selectedMeals: [],
+  error: false,
+  loading: true,
+};
 
-const reducer = (state=initialState, action) => {
-    switch (action.type) {
-        case actionTypes.ADD_MEAL_SUCCESS:
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case actionTypes.ADD_MEAL_SUCCESS:
+      let nextMealsAdd = state.meals.concat(action.meal);
 
-            let nextMealsAdd = state.meals.concat(action.meal);
+      return {
+        ...state,
+        meals: nextMealsAdd,
+      };
+    case actionTypes.ADD_MEAL_LOCAL:
+      let nextMealsAddLocal = state.meals.concat(action.meal);
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsAdd));
+      localStorage.setItem("meals", JSON.stringify(nextMealsAddLocal));
 
-            return {
-                ...state,
-                meals: nextMealsAdd
-            }
-        case actionTypes.ADD_MEAL_LOCAL:
-            let nextMealsAddLocal = state.meals.concat(action.meal);
+      return {
+        ...state,
+        meals: nextMealsAddLocal,
+      };
+    case actionTypes.REMOVE_MEAL_SUCCESS:
+      let nextMealsRemoveMeal = [...state.meals];
+      let indexRemoveMeal;
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsAddLocal));
+      for (let i = 0; i < nextMealsRemoveMeal.length; i++) {
+        if (nextMealsRemoveMeal[i].id === action.mealId) {
+          indexRemoveMeal = i;
+          break;
+        }
+      }
 
-            return {
-                ...state,
-                meals: nextMealsAddLocal
-            }
-        case actionTypes.REMOVE_MEAL_SUCCESS:
-            let nextMealsRemoveMeal = [...state.meals];
-            let indexRemoveMeal;
+      nextMealsRemoveMeal = nextMealsRemoveMeal
+        .slice(0, indexRemoveMeal)
+        .concat(
+          nextMealsRemoveMeal.slice(
+            indexRemoveMeal + 1,
+            nextMealsRemoveMeal.length
+          )
+        );
 
-            for (let i = 0; i < nextMealsRemoveMeal.length; i ++) {
-                if (nextMealsRemoveMeal[i].id === action.mealId) {
-                    indexRemoveMeal = i;
-                    break;
-                }
-            }
+      return {
+        ...state,
+        meals: nextMealsRemoveMeal,
+      };
+    case actionTypes.REMOVE_MEAL_LOCAL:
+      let nextMealsRemoveMealLocal = [...state.meals];
+      let indexRemoveMealLocal;
 
-            nextMealsRemoveMeal = nextMealsRemoveMeal.slice(0, indexRemoveMeal).concat(nextMealsRemoveMeal.slice(indexRemoveMeal + 1, nextMealsRemoveMeal.length));
+      for (let i = 0; i < nextMealsRemoveMealLocal.length; i++) {
+        if (nextMealsRemoveMealLocal[i].name === action.mealName) {
+          indexRemoveMealLocal = i;
+          break;
+        }
+      }
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsRemoveMeal));
+      nextMealsRemoveMealLocal = nextMealsRemoveMealLocal
+        .slice(0, indexRemoveMealLocal)
+        .concat(
+          nextMealsRemoveMealLocal.slice(
+            indexRemoveMealLocal + 1,
+            nextMealsRemoveMealLocal.length
+          )
+        );
 
-            return {
-                ...state,
-                meals: nextMealsRemoveMeal
-            }
-        case actionTypes.REMOVE_MEAL_LOCAL:
-            let nextMealsRemoveMealLocal = [...state.meals];
-            let indexRemoveMealLocal;
+      localStorage.setItem("meals", JSON.stringify(nextMealsRemoveMealLocal));
 
-            for (let i = 0; i < nextMealsRemoveMealLocal.length; i ++) {
-                if (nextMealsRemoveMealLocal[i].name === action.mealName) {
-                    indexRemoveMealLocal = i;
-                    break;
-                }
-            }
+      return {
+        ...state,
+        meals: nextMealsRemoveMealLocal,
+      };
 
-            nextMealsRemoveMealLocal = nextMealsRemoveMealLocal.slice(0, indexRemoveMealLocal).concat(nextMealsRemoveMealLocal.slice(indexRemoveMealLocal + 1, nextMealsRemoveMealLocal.length));
+    case actionTypes.ADD_INGREDIENT_SUCCESS:
+      let nextMealsAddIngredient = [...state.meals];
+      let thisMealAddIngredient = nextMealsAddIngredient.filter(
+        (m) => m.id === action.mealId
+      )[0];
+      let oldAddIngredients = [...thisMealAddIngredient.ingredients];
+      let newAddIngredients = oldAddIngredients.concat(action.ingredient);
+      thisMealAddIngredient.ingredients = newAddIngredients;
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsRemoveMealLocal));
+      return {
+        ...state,
+        meals: nextMealsAddIngredient,
+      };
+    case actionTypes.ADD_INGREDIENT_LOCAL:
+      let nextMealsAddIngredientLocal = [...state.meals];
+      let thisMealAddIngredientLocal = nextMealsAddIngredientLocal.filter(
+        (m) => m.name === action.mealName
+      )[0];
+      let oldAddIngredientsLocal = [...thisMealAddIngredientLocal.ingredients];
+      let newAddIngredientsLocal = oldAddIngredientsLocal.concat(
+        action.ingredient
+      );
+      thisMealAddIngredientLocal.ingredients = newAddIngredientsLocal;
 
-            return {
-                ...state,
-                meals: nextMealsRemoveMealLocal
-            }
+      localStorage.setItem(
+        "meals",
+        JSON.stringify(nextMealsAddIngredientLocal)
+      );
 
-        case actionTypes.ADD_INGREDIENT_SUCCESS:
-            let nextMealsAddIngredient = [...state.meals];
-            let thisMealAddIngredient = nextMealsAddIngredient.filter(m => m.id === action.mealId)[0];
-            let oldAddIngredients = [...thisMealAddIngredient.ingredients];
-            let newAddIngredients = oldAddIngredients.concat(action.ingredient);
-            thisMealAddIngredient.ingredients = newAddIngredients;
+      return {
+        ...state,
+        meals: nextMealsAddIngredientLocal,
+      };
+    case actionTypes.UPDATE_INGREDIENT_SUCCESS:
+      const mealIndex = state.meals.findIndex(
+        (meal) => meal.id === action.mealId
+      );
+      const beforeMeals = state.meals.slice(0, mealIndex);
+      const afterMeals = state.meals.slice(mealIndex + 1, state.meals.length);
+      let meal = { ...state.meals[mealIndex] };
+      let ingredients = meal.ingredients;
+      const ingredientIndex = ingredients.findIndex(
+        (ingredient) => ingredient.id === action.ingredient.id
+      );
+      const beforeIngredients = ingredients.slice(0, ingredientIndex);
+      const afterIngredients = ingredients.slice(
+        ingredientIndex + 1,
+        ingredients.length
+      );
+      ingredients = [
+        ...beforeIngredients,
+        action.ingredient,
+        ...afterIngredients,
+      ];
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsAddIngredient));
+      meal = { ...meal, ingredients: ingredients };
 
-            return {
-                ...state,
-                meals: nextMealsAddIngredient
-            }
-        case actionTypes.ADD_INGREDIENT_LOCAL:
-            let nextMealsAddIngredientLocal = [...state.meals];
-            let thisMealAddIngredientLocal = nextMealsAddIngredientLocal.filter(m => m.name === action.mealName)[0];
-            let oldAddIngredientsLocal = [...thisMealAddIngredientLocal.ingredients];
-            let newAddIngredientsLocal = oldAddIngredientsLocal.concat(action.ingredient);
-            thisMealAddIngredientLocal.ingredients = newAddIngredientsLocal;
+      const meals = [...beforeMeals, meal, ...afterMeals];
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsAddIngredientLocal));
+      return {
+        ...state,
+        meals: meals,
+      };
 
-            return {
-                ...state,
-                meals: nextMealsAddIngredientLocal
-            }
+    case actionTypes.REMOVE_INGREDIENT_SUCCESS:
+      let nextMealsRemoveIngredient = [...state.meals];
+      let thisMealRemove = nextMealsRemoveIngredient.filter(
+        (m) => m.id === action.mealId
+      )[0];
+      let oldRemoveIngredients = [...thisMealRemove.ingredients];
+      let removeIngredientIndex;
+      for (let i = 0; i < oldRemoveIngredients.length; i++) {
+        if (oldRemoveIngredients[i].id === action.ingredientId) {
+          removeIngredientIndex = i;
+        }
+      }
+      let newRemoveIngredients = oldRemoveIngredients
+        .slice(0, removeIngredientIndex)
+        .concat(
+          oldRemoveIngredients.slice(
+            removeIngredientIndex + 1,
+            oldRemoveIngredients.length
+          )
+        );
+      thisMealRemove.ingredients = newRemoveIngredients;
 
-        case actionTypes.REMOVE_INGREDIENT_SUCCESS:
-            let nextMealsRemoveIngredient = [...state.meals];
-            let thisMealRemove = nextMealsRemoveIngredient.filter(m => m.id === action.mealId)[0];
-            let oldRemoveIngredients = [...thisMealRemove.ingredients];
-            let removeIngredientIndex;
-            for (let i = 0; i < oldRemoveIngredients.length; i ++) {
-                if (oldRemoveIngredients[i].id === action.ingredientId) {
-                    removeIngredientIndex = i;
-                }
-            }
-            let newRemoveIngredients = oldRemoveIngredients.slice(0, removeIngredientIndex).concat(oldRemoveIngredients.slice(removeIngredientIndex + 1, oldRemoveIngredients.length));
-            thisMealRemove.ingredients = newRemoveIngredients;
+      return {
+        ...state,
+        meals: nextMealsRemoveIngredient,
+      };
+    case actionTypes.REMOVE_INGREDIENT_LOCAL:
+      let nextMealsRemoveIngredientLocal = [...state.meals];
+      let thisMealRemoveIngredientLocal = nextMealsRemoveIngredientLocal.filter(
+        (m) => m.name === action.mealName
+      )[0];
+      let oldRemoveIngredientsLocal = [
+        ...thisMealRemoveIngredientLocal.ingredients,
+      ];
+      let removeIngredientIndexLocal;
+      for (let i = 0; i < oldRemoveIngredientsLocal.length; i++) {
+        if (
+          oldRemoveIngredientsLocal[i].ingredientName === action.ingredientName
+        ) {
+          removeIngredientIndexLocal = i;
+        }
+      }
+      let newRemoveIngredientsLocal = oldRemoveIngredientsLocal
+        .slice(0, removeIngredientIndexLocal)
+        .concat(
+          oldRemoveIngredientsLocal.slice(
+            removeIngredientIndexLocal + 1,
+            oldRemoveIngredientsLocal.length
+          )
+        );
+      thisMealRemoveIngredientLocal.ingredients = newRemoveIngredientsLocal;
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsRemoveIngredient));
+      localStorage.setItem(
+        "meals",
+        JSON.stringify(nextMealsRemoveIngredientLocal)
+      );
 
-            return {
-                ...state,
-                meals: nextMealsRemoveIngredient
-            }
-        case actionTypes.REMOVE_INGREDIENT_LOCAL:
-            let nextMealsRemoveIngredientLocal = [...state.meals];
-            let thisMealRemoveIngredientLocal = nextMealsRemoveIngredientLocal.filter(m => m.name === action.mealName)[0];
-            let oldRemoveIngredientsLocal = [...thisMealRemoveIngredientLocal.ingredients];
-            let removeIngredientIndexLocal;
-            for (let i = 0; i < oldRemoveIngredientsLocal.length; i ++) {
-                if (oldRemoveIngredientsLocal[i].ingredientName === action.ingredientName) {
-                    removeIngredientIndexLocal = i;
-                }
-            }
-            let newRemoveIngredientsLocal = oldRemoveIngredientsLocal.slice(0, removeIngredientIndexLocal).concat(oldRemoveIngredientsLocal.slice(removeIngredientIndexLocal + 1, oldRemoveIngredientsLocal.length));
-            thisMealRemoveIngredientLocal.ingredients = newRemoveIngredientsLocal;
+      return {
+        ...state,
+        meals: nextMealsRemoveIngredientLocal,
+      };
 
-            localStorage.setItem("meals", JSON.stringify(nextMealsRemoveIngredientLocal));
+    case actionTypes.SELECT_MEAL:
+      let selectedMeal = state.meals.filter(
+        (m) => m.name === action.mealName
+      )[0];
 
-            return {
-                ...state,
-                meals: nextMealsRemoveIngredientLocal
-            }
+      return {
+        ...state,
+        selectedMeals: state.selectedMeals.concat(selectedMeal),
+      };
+    case actionTypes.DESELECT_MEAL:
+      let selectedIndex;
 
-        case actionTypes.SELECT_MEAL:
-            let selectedMeal = state.meals.filter(m => m.name === action.mealName)[0];
+      for (let i = 0; i < state.selectedMeals.length; i++) {
+        if (state.selectedMeals[i].name === action.mealName) {
+          selectedIndex = i;
+          break;
+        }
+      }
 
-            return {
-                ...state,
-                selectedMeals: state.selectedMeals.concat(selectedMeal)
-            }
-        case actionTypes.DESELECT_MEAL:
-            let selectedIndex;
+      let nextSelectedMeals = state.selectedMeals
+        .slice(0, selectedIndex)
+        .concat(
+          state.selectedMeals.slice(
+            selectedIndex + 1,
+            state.selectedMeals.length
+          )
+        );
+      return {
+        ...state,
+        selectedMeals: nextSelectedMeals,
+      };
+    case actionTypes.ADD_ITEM:
+      let nextSelectedMealsAddItem = [...state.selectedMeals];
 
-            for (let i = 0; i < state.selectedMeals.length; i ++) {
-                if (state.selectedMeals[i].name === action.mealName) {
-                    selectedIndex = i;
-                    break;
-                }
-            }
+      return {
+        ...state,
+        selectedMeals: nextSelectedMealsAddItem.concat({
+          ingredients: [action.newItem],
+        }),
+      };
 
-            let nextSelectedMeals = state.selectedMeals.slice(0, selectedIndex).concat(state.selectedMeals.slice(selectedIndex + 1, state.selectedMeals.length));
-            return {
-                ...state,
-                selectedMeals: nextSelectedMeals
-            }
-        case actionTypes.SET_MEALS:
-            return {
-                ...state,
-                meals: action.meals,
-                error: false,
-            }
-        case actionTypes.FETCH_MEALS_START:
-            return updateObject(state, {loading: true});
-        case actionTypes.FETCH_MEALS_FAILED:
-            return updateObject(state, {loading: false})
-        case actionTypes.FETCH_MEALS_SUCCESS:
-            return updateObject(state, {
-                meals: action.meals,
-                loading: false,
-                error: false
-            })
-        case actionTypes.FETCH_MEALS_LOCAL:
-            let localMeals = JSON.parse(localStorage.getItem('meals'));
+    case actionTypes.SET_MEALS:
+      return {
+        ...state,
+        meals: action.meals,
+        error: false,
+      };
+    case actionTypes.FETCH_MEALS_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.FETCH_MEALS_FAILED:
+      return updateObject(state, { loading: false });
+    case actionTypes.FETCH_MEALS_SUCCESS:
+      return updateObject(state, {
+        meals: action.meals,
+        loading: false,
+        error: false,
+      });
+    case actionTypes.FETCH_MEALS_LOCAL:
+      let localMeals = JSON.parse(localStorage.getItem("meals"));
 
-            if (localMeals === null) {
-                localMeals = initialMeals;
-                localStorage.setItem('meals', JSON.stringify(localMeals));
-            }
-            return updateObject(state, {
-                meals: localMeals,
-                loading: false,
-                error: false
-            })
-        default:
-            return state;
-
-    }
-}
+      if (localMeals === null) {
+        localMeals = initialMeals;
+        localStorage.setItem("meals", JSON.stringify(localMeals));
+      }
+      return updateObject(state, {
+        meals: localMeals,
+        loading: false,
+        error: false,
+      });
+    default:
+      return state;
+  }
+};
 
 export default reducer;

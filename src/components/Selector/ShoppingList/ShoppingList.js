@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import * as actions from '../../../store/actions/index';
+
 import classes from './ShoppingList.module.css';
 
 class ShoppingList extends Component {
+
+    state = {
+        addingItem: false
+    }
     
     getIngredients = (meals) => {
         let ings = {};
@@ -19,8 +25,38 @@ class ShoppingList extends Component {
         }
         return ings;
     }
+
+    onAddItemClicked = () => {
+        this.setState({
+            addingItem: true
+        });
+    }
+
+    onAddIngredientKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            this.setState({
+                addingItem: false
+            });
+            let newItem = {ingredientName: e.target.value}
+            
+            this.props.onAddItem(newItem);
+        }
+    }
+
+    
+
     render () {
         let ingredients = this.getIngredients(this.props.selectedMeals);
+
+        let addInput;
+
+        if (this.state.addingItem) {
+            addInput = <input 
+                className={classes.NewItem}
+                onKeyPress={this.onAddIngredientKeyPress}
+                autoFocus={true}
+                onBlur={() => {this.setState({addingIngredient: false})}}/>
+        }
 
         return (
             <div className={classes.ShoppingList}>
@@ -38,11 +74,16 @@ class ShoppingList extends Component {
 
                         return (
                             <li key={ing}>
+                                <input type="checkbox" />
                                 <p>{ing + suffix}</p>
                             </li>
                         );
                     })}
                 </ul>
+                {addInput}
+                <button 
+                    className={classes.Add}
+                    onClick={this.onAddItemClicked}>+</button>
             </div>
         )
     }
@@ -54,4 +95,10 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(ShoppingList);
+const mapDispatchToProps = dispatch => {
+    return {
+        onAddItem: (newItem) => dispatch(actions.addItem(newItem))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShoppingList);
